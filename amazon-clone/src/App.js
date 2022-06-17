@@ -7,9 +7,15 @@ import Checkout from "./Checkout";
 import Login from "./Login";
 import { useStateValue } from "./StateProvider";
 import { auth } from "./firebase";
+import Payment from "./Payment";
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
 
 function App() {
   const [{}, dispatch] = useStateValue();
+  const promise = loadStripe(
+    "pk_test_51LBDqxSCd4caZ2h1LJiH69ZS8rQLcczjkiPDolFAQg5ec39sIX3myiSYryVTQ805SmDHPdNhp4vWmS5fdsoeH98L00scDNnq7J"
+  );
 
   useEffect(() => {
     auth.onAuthStateChanged((authUser) => {
@@ -58,6 +64,19 @@ function App() {
               <>
                 <Header />
                 <Checkout />
+              </>
+            }
+          />
+        </Routes>
+        <Routes>
+          <Route
+            path="/payment"
+            element={
+              <>
+                <Header />
+                <Elements stripe={promise}>
+                  <Payment />
+                </Elements>
               </>
             }
           />
