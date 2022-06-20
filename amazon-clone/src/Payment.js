@@ -7,6 +7,7 @@ import CheckoutProduct from "./CheckoutProduct";
 import "./Payment.css";
 import { getCartTotal } from "./reducer";
 import { useStateValue } from "./StateProvider";
+import { db } from "./firebase";
 
 function Payment() {
   const [{ cart, user }, dispatch] = useStateValue();
@@ -41,10 +42,29 @@ function Payment() {
           card: elements.getElement(CardElement),
         },
       })
-      .then(({ paymentIntent }) => {
+      .then((result) => {
+        if (result.error) {
+          console.log("<<<<<<<<<<<", result.error.message);
+        } else {
+          db.collection("users")
+            .doc(user?.uid)
+            .collection("orders")
+            .doc(result.paymentIntent.id)
+            .set({
+              cart: cart,
+              amount: result.paymentIntent.amount,
+              created: result.paymentIntent.created,
+            });
+        }
+
         setSucceeded(true);
         setError(null);
         setProcessing(false);
+
+        dispatch({
+          type: "EMPTY_CART",
+        });
+
         navigate("/orders", { replace: true });
       });
   };

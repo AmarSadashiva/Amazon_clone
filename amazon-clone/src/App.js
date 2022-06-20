@@ -10,6 +10,7 @@ import { auth } from "./firebase";
 import Payment from "./Payment";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
+import Orders from "./Orders";
 
 function App() {
   const [{}, dispatch] = useStateValue();
@@ -42,6 +43,17 @@ function App() {
             element={
               <>
                 <Login />
+              </>
+            }
+          />
+        </Routes>
+        <Routes>
+          <Route
+            path="/orders"
+            element={
+              <>
+                <Header />
+                <Orders />
               </>
             }
           />
